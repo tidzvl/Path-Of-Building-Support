@@ -1,21 +1,25 @@
 document.addEventListener('DOMContentLoaded', () => {
   const button = document.querySelector('.detect');
-  var start = false;
+  localStorage.clear();
+  // const start = localStorage.getItem('isStarted');
+  // if (start === null) {
+  //   localStorage.setItem('isStarted', false);
+  // }
   if (button) {
     button.addEventListener('click', () => {
-      if (!start) {
-        start = true;
+      if (!localStorage.getItem('isStarted') || localStorage.getItem('isStarted') === 'flase' || localStorage.getItem('isStarted') === false) {
+        localStorage.setItem('isStarted', 'true');
         button.classList.add('starting');
         button.textContent = 'Detecting...';
         document.querySelector('.note').textContent = 'Note: Click lần nữa để kết thúc!';
       }else{
-        start = false;
+        localStorage.clear();
         button.classList.remove('starting');
         button.textContent = 'Start Detect';
         document.querySelector('.note').textContent = 'Note: Click Start sau đó di chuột qua các item của build trong pob để lấy dữ liệu!'
       }
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        chrome.tabs.sendMessage(tabs[0].id, { action: 'test' });
+        chrome.tabs.sendMessage(tabs[0].id, { action: 'buttonClicked' });
       });
     });
   } else {
