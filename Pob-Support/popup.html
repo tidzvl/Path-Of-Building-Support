@@ -19,12 +19,54 @@
 -->
 
 <!DOCTYPE html>
-<html>
+<html lang="vi">
   <head>
+    <meta charset="utf-8" />
     <title>Path Of Building Support</title>
+    <script src="js/popup.js"></script>
+    <link rel="stylesheet" href="css/style.css">
   </head>
   <body>
     <h1>Hello, i'm inT1z!</h1>
-    <p>Welcome to pob.</p>
+    <div class="noti">That be noti</div>
+    <br>
+    <!-- <button class="test">Test</button> -->
+    <button class="detect">Start Detect </button>
+    <p class="note"><em>Note: Click Start sau đó di chuột qua các item của build trong pob để lấy dữ liệu!
+    </em></p>
+    <div class="container">
+        <ul>
+            <label"><strong>Trade link option:</strong></label>
+            <li style="margin-top: 2%;">
+                <input name="tradelink" class="tradelink" type="radio" id="trade-default" checked>
+                <label for="trade-default">Chỉ tìm item theo dòng chuẩn.</label>
+            </li>
+            <li>
+                <input name="tradelink" class="tradelink" type="radio" id="trade-with">
+                <label for="trade-with">Tìm dòng theo chỉ số:
+                    <select id="less" name="options" disabled> 
+                        <option value="10">-10%</option> 
+                        <option value="20">-20%</option> 
+                        <option value="30">-30%</option> 
+                        <option value="40">-40%</option> 
+                        <option value="50">-50%</option> 
+                    </select>
+                </label>
+            </li>
+            <br>
+            <li>
+                <input class="" type="checkbox" id="check-list">
+                <label for="check-list">Tự động kiểm tra item được list.</label>
+            </li>
+            <li>
+                <input name="option" class="" type="radio" id="noti-trade" disabled>
+                <label for="noti-trade">Thông báo nếu có vật phẩm.</label>
+            </li>
+            <li>
+                <input name="option" class="" type="radio" id="noti-trade-unique" disabled>
+                <label for="noti-trade-unique">Chỉ thông báo item unique.</label>
+            </li>
+        </ul>
+    </div>
   </body>
 </html>

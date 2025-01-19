@@ -1,0 +1,23 @@
+{
+  "name": "path-of-building-support",
+  "version": "1.0.0",
+  "description": "No desc",
+  "main": "reload.js",
+  "scripts": {
+    "test": "npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tidzvl/Path-Of-Building-Support.git"
+  },
+  "keywords": [
+    "Pob",
+    "Support"
+  ],
+  "author": "inT1z",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tidzvl/Path-Of-Building-Support/issues"
+  },
+  "homepage": "https://github.com/tidzvl/Path-Of-Building-Support#readme"
+}

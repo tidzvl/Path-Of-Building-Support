@@ -1,21 +1,22 @@
 {
-    "manifest_version": 3,
-    "name": "My Chrome Extension",
-    "version": "1.0",
-    "description": "This is a basic Chrome extension.",
-    "permissions": [
-      "activeTab"
-    ],
-    "background": {
-      "service_worker": "background.js"
-    },
-    "action": {
-      "default_popup": "popup.html",
-      "default_icon": {
-        "16": "images/icon16.png",
-        "48": "images/icon48.png",
-        "128": "images/icon128.png"
-      }
+  "manifest_version": 3,
+  "name": "Path Of Building Support",
+  "version": "1.0",
+  "description": "Path Of Building Support.",
+  "permissions": ["activeTab","scripting"],
+  "background": {
+    "service_worker": "js/background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "48": "img/48.png"
     }
-  }
-  
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://pobb.in/*"],
+      "js": ["js/content.js"]
+    }
+  ]
+}
