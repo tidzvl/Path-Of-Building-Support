@@ -3,7 +3,7 @@
   "name": "Path Of Building Support",
   "version": "1.0",
   "description": "Path Of Building Support.",
-  "permissions": ["activeTab","scripting", "storage"],
+  "permissions": ["activeTab", "scripting", "storage"],
   "background": {
     "service_worker": "js/background.js"
   },
@@ -16,7 +16,13 @@
   "content_scripts": [
     {
       "matches": ["https://pobb.in/*"],
-      "js": ["js/content.js"]
+      "js": ["js/content.js", "js/fuse.min.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    { 
+      "resources": ["json/stat.json"], 
+      "matches": ["https://pobb.in/*"] 
     }
   ]
 }

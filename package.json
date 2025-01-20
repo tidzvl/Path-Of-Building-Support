@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/tidzvl/Path-Of-Building-Support/issues"
   },
-  "homepage": "https://github.com/tidzvl/Path-Of-Building-Support#readme"
+  "homepage": "https://github.com/tidzvl/Path-Of-Building-Support#readme",
+  "dependencies": {
+    "fuse.js": "^7.0.0"
+  }
 }
