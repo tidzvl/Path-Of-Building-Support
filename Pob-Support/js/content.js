@@ -24,16 +24,9 @@ class Item {
   }
 
   add_modified(modified) {
-    modified = String(modified);
-    this.get_id_modified(modified).then(item => {
-      if (item) {
-        console.log(item);
-        this.modified.push(modified, item);
-      }
-    }).catch(error => {
-      console.error(error);
-      this.modified.push(modified);
-    });
+    modified = String(modified.attribute);
+    
+    this.modified.push(modified, this.get_id_modified(modified));
   }
 
   to_string() {
@@ -41,60 +34,42 @@ class Item {
   }
 
   get_id_modified(modified) {
-  return fetch(chrome.runtime.getURL('json/stat.json'))
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .then(data => {
-      const entries = data.result.flatMap((entry) => entry.entries);
-      return this.fuzzySearch(modified, entries);
-    })
-    .catch(error => {
-      console.error('Fetch error:', error);
-      return null;
+    const json = JSON.parse(localStorage.getItem("data"));
+    const regex = new RegExp(modified.replace(/#/g, "(\\d+|#)"), "g");
+
+    const filteredEntries = [];
+    console.log(modified)
+    console.log(regex);
+    json.result.forEach((result) => {
+      result.entries.forEach((entry) => {
+        if (entry.text.match(regex)) {
+          filteredEntries.push(entry);
+        }
+      });
     });
-}
-
-  fuzzySearch(query, data) {
-  const results = [];
-  query = query.toLowerCase().replace(/#/, "\\d+");
-  const queryRegex = new RegExp(query);
-
-  if (Array.isArray(data)) {
-    data.forEach((item) => {
-      const text = item.text.toLowerCase();
-      if (queryRegex.test(text)) {
-        results.push(item);
-      }
-    });
+    return filteredEntries;
   }
-
-  return results.length > 0 ? results[0] : null;
-}
-
-similarityScore(a, b) {
-  const m = a.length;
-  const n = b.length;
-  const dp = Array(m + 1).fill(0).map(() => Array(n + 1).fill(0));
-  for (let i = 0; i <= m; i++) {
-    for (let j = 0; j <= n; j++) {
-      if (i === 0 || j === 0) {
-        dp[i][j] = 0;
-      } else if (a[i - 1] === b[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-      } else {
-        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-      }
-    }
-  }
-  return dp[m][n] / Math.max(m, n);
-}
 }
 
 console.log("Start");
+
+if (localStorage.getItem("data") === null) {
+  console.log("fetch");
+  fetch(chrome.runtime.getURL("json/stat.json"))
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      localStorage.setItem("data", JSON.stringify(data));
+    })
+    .catch((error) => {
+      console.error("Fetch error:", error);
+      return null;
+    });
+}
 var start = false;
 
 let observers = [];
