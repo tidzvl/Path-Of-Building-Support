@@ -3,7 +3,7 @@
   "name": "Path Of Building Support",
   "version": "1.0",
   "description": "Path Of Building Support.",
-  "permissions": ["activeTab","scripting"],
+  "permissions": ["activeTab","scripting", "storage"],
   "background": {
     "service_worker": "js/background.js"
   },
