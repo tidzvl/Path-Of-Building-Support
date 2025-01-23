@@ -4,6 +4,7 @@ class equidItem {
   }
 
   add_item(item) {
+    item.gen_json();
     this.Array.push(item);
   }
   check_containts(item) {
@@ -23,13 +24,61 @@ class Item {
     this.name = name;
     this.baseName = name.split(",")[1];
     this.modified = [];
+    this.search_json = "";
   }
 
   add_modified(modified) {
     var value = modified.values;
     modified = String(modified.attribute);
-    
-    this.modified.push({mod: modified, ids: this.get_id_modified(modified), values: value});
+
+    this.modified.push({
+      mod: modified,
+      ids: this.get_id_modified(modified),
+      values: value,
+    });
+  }
+
+  gen_json() {
+    var modified = this.modified;
+    var prefix = `{"query": {"type": "`+ this.baseName +`","stats": [`;
+    var postfix = `]},"status": {"option": "any"}}`;
+    var fix = "";
+    var i = 0;
+    for (let stat of modified){
+      i++;
+      if(stat.ids.length == 0) continue;
+      var add_fix = this.gen_stat(stat.ids, stat.values);
+      if(i < modified.length) add_fix += ",";
+      fix += add_fix;
+    }
+    var all_fix = prefix + fix + postfix;
+    this.search_json = all_fix;
+  }
+
+  gen_stat(list_of_modified, list_of_values) {
+    var fix = "";
+    if (list_of_modified.length == 0) return fix;
+    var prefix = `{
+      "type": "count",
+      "value": {
+        "max": 1,
+        "min": 1
+      },
+      "filters": [`;
+    var postfix = `],
+      "disabled": false
+    }`;
+    var i = 0;
+    for (let mod of list_of_modified) {
+      fix +=
+        `{"id": "` +
+        mod.id +
+        `","value": {"max": 1000,"min": -1000},"disabled": false}`;
+      if (i < list_of_modified.length - 1) fix += ",";
+      i++;
+    }
+    var all_fix = prefix + fix + postfix;
+    return all_fix;
   }
 
   to_string() {
@@ -41,8 +90,18 @@ class Item {
     // console.log(modified);
     // const regex = new RegExp(modified.replace(/#/g, "(\\d+|#)"), "g");
     const regex = new RegExp(
-      modified.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1").replace(/#/g, "(\\d+|#)"), "g");
-    const regexPerfect = new RegExp("^" + modified.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1").replace(/#/g, "(\\d+|#)") + "$");
+      modified
+        .replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1")
+        .replace(/#/g, "(\\d+|#)"),
+      "g"
+    );
+    const regexPerfect = new RegExp(
+      "^" +
+        modified
+          .replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1")
+          .replace(/#/g, "(\\d+|#)") +
+        "$"
+    );
 
     var filteredEntries = [];
     // console.log(modified)
@@ -50,10 +109,14 @@ class Item {
     var much = false;
     json.result.forEach((result) => {
       result.entries.forEach((entry) => {
-        if (entry.text.match(regex) && much === false && filteredEntries.length <= 10) {
+        if (
+          entry.text.match(regex) &&
+          much === false &&
+          filteredEntries.length <= 100
+        ) {
           filteredEntries.push(entry);
-        }else if (entry.text.match(regexPerfect)){
-          if (much === false){
+        } else if (entry.text.match(regexPerfect)) {
+          if (much === false) {
             much = true;
             filteredEntries = [];
           }
