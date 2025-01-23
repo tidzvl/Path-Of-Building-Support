@@ -18,15 +18,18 @@ class equidItem {
 }
 
 class Item {
-  constructor(name) {
+  constructor(name, rare) {
+    this.rare = rare;
     this.name = name;
+    this.baseName = name.split(",")[1];
     this.modified = [];
   }
 
   add_modified(modified) {
+    var value = modified.values;
     modified = String(modified.attribute);
     
-    this.modified.push(modified, this.get_id_modified(modified));
+    this.modified.push({mod: modified, ids: this.get_id_modified(modified), values: value});
   }
 
   to_string() {
@@ -35,14 +38,25 @@ class Item {
 
   get_id_modified(modified) {
     const json = JSON.parse(localStorage.getItem("data"));
-    const regex = new RegExp(modified.replace(/#/g, "(\\d+|#)"), "g");
+    // console.log(modified);
+    // const regex = new RegExp(modified.replace(/#/g, "(\\d+|#)"), "g");
+    const regex = new RegExp(
+      modified.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1").replace(/#/g, "(\\d+|#)"), "g");
+    const regexPerfect = new RegExp("^" + modified.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1").replace(/#/g, "(\\d+|#)") + "$");
 
-    const filteredEntries = [];
-    console.log(modified)
-    console.log(regex);
+    var filteredEntries = [];
+    // console.log(modified)
+    // console.log(regex);
+    var much = false;
     json.result.forEach((result) => {
       result.entries.forEach((entry) => {
-        if (entry.text.match(regex)) {
+        if (entry.text.match(regex) && much === false && filteredEntries.length <= 10) {
+          filteredEntries.push(entry);
+        }else if (entry.text.match(regexPerfect)){
+          if (much === false){
+            much = true;
+            filteredEntries = [];
+          }
           filteredEntries.push(entry);
         }
       });
@@ -110,12 +124,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                   ? div.textContent
                   : "";
               if (divText && !returnedValues.has(divText)) {
-                name += divText + " ";
+                name += divText + ",";
                 returnedValues.add(divText);
               }
             });
             if (name != "") {
-              var item = new Item(name);
+              var rarity = mutation.target.getAttribute("data-rarity");
+              console.log(rarity);
+              var item = new Item(name, rarity);
               mutation.target.querySelectorAll("ul li").forEach((ul) => {
                 if (!returnedValues.has(ul.textContent)) {
                   var liStr = ul.textContent;
@@ -143,6 +159,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                     attribute: attribute,
                     values: values.map((value) => value.replace("%", "")),
                   };
+                  // console.log(result);
                   item.add_modified(result);
                   returnedValues.add(result);
                 }
