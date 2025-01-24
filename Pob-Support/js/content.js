@@ -5,6 +5,8 @@ class equidItem {
 
   add_item(item) {
     item.gen_json();
+    // item.gen_link();
+    item.get_total();
     this.Array.push(item);
   }
   check_containts(item) {
@@ -16,6 +18,17 @@ class equidItem {
     }
     return false;
   }
+  print_link(){
+    for (var i = 0; i < this.Array.length; i++) {
+      console.log(this.Array[i].search_link);
+    }
+  }
+
+  print_total(){
+    for (var i = 0; i < this.Array.length; i++) {
+      console.log(this.Array[i].total + ' ' + this.Array[i].id);
+    }
+  }
 }
 
 class Item {
@@ -25,6 +38,9 @@ class Item {
     this.baseName = name.split(",")[1];
     this.modified = [];
     this.search_json = "";
+    this.search_link = "";
+    this.total = 0;
+    this.trade_id = "";
   }
 
   add_modified(modified) {
@@ -55,6 +71,8 @@ class Item {
       if (i < modified.length) add_fix += ",";
       fix += add_fix;
     }
+
+    if (fix.slice(-1) == ",") fix = fix.slice(0, -1);
     var all_fix = prefix + fix + postfix;
     this.search_json = all_fix;
   }
@@ -90,6 +108,8 @@ class Item {
   }
 
   get_id_modified(modified) {
+    modified = modified.replace(" -", " +");
+    modified = modified.replace("-#", "+#");
     const json = JSON.parse(localStorage.getItem("data"));
     // console.log(modified);
     // const regex = new RegExp(modified.replace(/#/g, "(\\d+|#)"), "g");
@@ -115,7 +135,7 @@ class Item {
         "$"
     );
     // console.log(regex);
-    console.log(regexPerfect);
+    // console.log(regexPerfect);
 
     var filteredEntries = [];
     // console.log(modified)
@@ -138,7 +158,60 @@ class Item {
         }
       });
     });
+    const mod2 = modified+" (Local)";
+    // console.log(mod2);
+    const regexPerfect2 = new RegExp(
+      "^" +
+        mod2
+          .replace(/([.*?^=!:${}()|\[\]\/\\])/g, "\\$1")
+          .replace(/#/g, "(\\d+|#)")
+          .replace(/\+/g, "\\+") +
+        "$"
+    );
+    var much = false;
+    json.result.forEach((result) => {
+      result.entries.forEach((entry) => {
+        if (
+          entry.text.match(regexPerfect2) &&
+          much === false &&
+          filteredEntries.length <= 100
+        ) {
+          filteredEntries.push(entry);
+        } else if (entry.text.match(regexPerfect2)) {
+          if (much === false) {
+            much = true;
+            filteredEntries = [];
+          }
+          filteredEntries.push(entry);
+        }
+      });
+    });
     return filteredEntries;
+  }
+
+  gen_link(){
+    var prefix = "https://www.pathofexile.com/trade/search/Settlers?q=";
+    var encode = encodeURIComponent(this.search_json);
+    var link = prefix + encode;
+    this.search_link = link;
+  }
+
+  get_total(){
+    const body = JSON.stringify(this.search_json);
+    const url_api = 'https://www.pathofexile.com/api/trade/search/Settlers';
+    chrome.runtime.sendMessage({
+      type: 'fetch_data',
+      url_api,
+      method: 'POST', 
+      headers: { 'Content-Type': 'application/json' },
+      body: body
+    }, response => {
+      if (response.success) {
+        console.log(response.data);
+      } else {
+        console.error('Error:', response.error);
+      }
+    });
   }
 }
 
@@ -225,12 +298,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                   };
                   let values = extractValues(liStr);
                   let attribute = liStr;
-                  console.log(attribute);
+                  // console.log(attribute);
                   values.forEach((value, index) => {
-                    attribute = attribute.replace(value, "#");
+                    if (Math.abs(value) > 0 && index === 0) {
+                      attribute = attribute.replace(Math.abs(value), "#");
+                    }else{
+                      attribute = attribute.replace(value, "#");
+                    }
                   });
                   attribute = attribute.replace(/[()]/g, "").trim();
                   attribute = attribute.replace(/#+/g, "#");
+                  // console.log(attribute);
                   let result = {
                     attribute: attribute,
                     values: values.map((value) => value.replace("%", "")),
@@ -258,6 +336,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       observers.forEach((observer) => observer.disconnect());
       observers = [];
       console.log(eqItem.Array);
+      eqItem.print_total()
     }
   }
 });
