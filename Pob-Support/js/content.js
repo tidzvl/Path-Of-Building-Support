@@ -40,15 +40,19 @@ class Item {
 
   gen_json() {
     var modified = this.modified;
-    var prefix = `{"query": {"type": "`+ this.baseName +`","stats": [`;
+    if (this.baseName === "") {
+      var prefix = `{"query": {"stats": [`;  
+    }else{
+      var prefix = `{"query": {"type": "` + this.baseName + `","stats": [`;
+    }
     var postfix = `]},"status": {"option": "any"}}`;
     var fix = "";
     var i = 0;
-    for (let stat of modified){
+    for (let stat of modified) {
       i++;
-      if(stat.ids.length == 0) continue;
+      if (stat.ids.length == 0) continue;
       var add_fix = this.gen_stat(stat.ids, stat.values);
-      if(i < modified.length) add_fix += ",";
+      if (i < modified.length) add_fix += ",";
       fix += add_fix;
     }
     var all_fix = prefix + fix + postfix;
@@ -95,13 +99,23 @@ class Item {
         .replace(/#/g, "(\\d+|#)"),
       "g"
     );
+    // const regexPerfect = new RegExp(
+    //   "^" +
+    //     modified
+    //       .replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1")
+    //       .replace(/#/g, "(\\d+|#)") +
+    //     "$"
+    // );
     const regexPerfect = new RegExp(
       "^" +
         modified
-          .replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1")
-          .replace(/#/g, "(\\d+|#)") +
+          .replace(/([.*?^=!:${}()|\[\]\/\\])/g, "\\$1")
+          .replace(/#/g, "(\\d+|#)")
+          .replace(/\+/g, "\\+") +
         "$"
     );
+    // console.log(regex);
+    console.log(regexPerfect);
 
     var filteredEntries = [];
     // console.log(modified)
@@ -110,7 +124,7 @@ class Item {
     json.result.forEach((result) => {
       result.entries.forEach((entry) => {
         if (
-          entry.text.match(regex) &&
+          entry.text.match(regexPerfect) &&
           much === false &&
           filteredEntries.length <= 100
         ) {
@@ -211,9 +225,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                   };
                   let values = extractValues(liStr);
                   let attribute = liStr;
+                  console.log(attribute);
                   values.forEach((value, index) => {
-                    // attribute = attribute.replace(/([+\-]?\d+(\.\d+)?%?)|(\(\d+-\d+\)%?)/g, '').trim();
-                    // attribute = attribute.replace(/^\+/g, '');
                     attribute = attribute.replace(value, "#");
                   });
                   attribute = attribute.replace(/[()]/g, "").trim();

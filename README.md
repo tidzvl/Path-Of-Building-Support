@@ -24,3 +24,10 @@
 ### Task 3
 
 - If it ok, i can build the application have function auto whisper the seller when item i checked is listing.
+
+
+### Update Item Modified
+
+- Per item, we have the "Base Name" first, Quality and normal base mod can be skipped. It place in <ul> first
+- At modified, the Implict mod place in the second <ul> with color is **#88f**.
+- The explict and crafting mod place in the third <ul>.
