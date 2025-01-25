@@ -31,3 +31,8 @@
 - Per item, we have the "Base Name" first, Quality and normal base mod can be skipped. It place in <ul> first
 - At modified, the Implict mod place in the second <ul> with color is **#88f**.
 - The explict and crafting mod place in the third <ul>.
+
+### Update Use Api
+
+- The api can use in extension developer console, but the console of current web is not available. 
+- I think i can use dev console to fetch api and code the mes to return backend.
