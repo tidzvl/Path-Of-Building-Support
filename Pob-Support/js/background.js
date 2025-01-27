@@ -7,16 +7,24 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.type === 'fetch_data') {
-    fetch(message.url, {
-      method: message.method || 'GET',
-      headers: message.headers || { 'Content-Type': 'application/json' },
-      body: JSON.stringify(message.body) || null
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
+  if(request.type === "getTotal"){
+    // console.log(request.data);
+    let query = request.data;
+    let response;
+    fetch('https://www.pathofexile.com/api/trade/search/Settlers', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      // body: JSON.stringify(query)
+      body: JSON.parse(query)
     })
     .then(response => response.json())
-    .then(data => sendResponse({ success: true, data }))
-    .catch(error => sendResponse({ success: false, error }));
-    return true; 
+    .then(data => sendResponse(data))
+    .catch(error => sendResponse(error));
+    // sendResponse(response);
   }
+  return true;
 });

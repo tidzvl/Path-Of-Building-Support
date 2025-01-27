@@ -6,9 +6,20 @@ class equidItem {
   add_item(item) {
     item.gen_json();
     // item.gen_link();
-    item.get_total();
+    // item.get_total();
     this.Array.push(item);
   }
+
+  check_total(){
+    for (var i = 0; i < this.Array.length; i++) {
+      // console.log(this.Array[i].total);
+      setTimeout(function(){
+        let item = this.Array[i];
+        item.get_total();
+      },60000);
+    }
+  }
+
   check_containts(item) {
     var str = item.to_string();
     for (var i = 0; i < this.Array.length; i++) {
@@ -199,22 +210,17 @@ class Item {
   get_total(){
     const body = JSON.stringify(this.search_json);
     const url_api = 'https://www.pathofexile.com/api/trade/search/Settlers';
-    chrome.runtime.sendMessage({
-      type: 'fetch_data',
-      url_api,
-      method: 'POST', 
-      headers: { 'Content-Type': 'application/json' },
-      body: body
-    }, response => {
-      if (response.success) {
-        console.log(response.data);
-      } else {
-        console.error('Error:', response.error);
-      }
+    chrome.runtime.sendMessage({type: "getTotal", data: body}, function(response) {
+      console.log(response);
     });
+    this.total = response.total;
+    this.trade_id = response.id;
   }
 }
 
+if(!window.location.href.includes("pobb.in")){
+  throw null;
+}
 console.log("Start");
 
 if (localStorage.getItem("data") === null) {

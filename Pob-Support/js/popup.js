@@ -20,9 +20,6 @@ function toggleButton() {
 
 document.addEventListener('DOMContentLoaded', () => {
   const button = document.querySelector('.detect');
-  if (!window.location.href.includes("https://pobb.in/")){
-    return;
-  }
   chrome.storage.local.get("buttonState", (result) => {
     if (result.buttonState === "toggled") {
       button.classList.add('starting');
