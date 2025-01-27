@@ -10,13 +10,10 @@ class equidItem {
     this.Array.push(item);
   }
 
-  check_total(){
-    for (var i = 0; i < this.Array.length; i++) {
-      // console.log(this.Array[i].total);
-      setTimeout(function(){
-        let item = this.Array[i];
-        item.get_total();
-      },60000);
+  async check_total(){
+    for (let item of this.Array) {
+      item.get_total();
+      await new Promise(resolve => setTimeout(resolve, 60000));
     }
   }
 
@@ -212,9 +209,10 @@ class Item {
     const url_api = 'https://www.pathofexile.com/api/trade/search/Settlers';
     chrome.runtime.sendMessage({type: "getTotal", data: body}, function(response) {
       console.log(response);
+      this.total = parseInt(response.total);
+      this.trade_id = response.id;
     });
-    this.total = response.total;
-    this.trade_id = response.id;
+    // console.log(response);
   }
 }
 
@@ -341,8 +339,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       start = false;
       observers.forEach((observer) => observer.disconnect());
       observers = [];
-      console.log(eqItem.Array);
-      eqItem.print_total()
+      // eqItem.check_total()
+      // console.log(eqItem.Array);
+      waitCheckTotal(eqItem);
     }
   }
 });
+
+async function waitCheckTotal(eqItem){
+  await eqItem.check_total();
+  console.log(eqItem.Array);
+}
