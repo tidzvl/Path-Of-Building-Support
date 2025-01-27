@@ -205,15 +205,17 @@ class Item {
   }
 
   get_total(){
+    const self = this;
     const body = JSON.stringify(this.search_json);
     const url_api = 'https://www.pathofexile.com/api/trade/search/Settlers';
     chrome.runtime.sendMessage({type: "getTotal", data: body}, function(response) {
       console.log(response);
-      this.total = parseInt(response.total);
-      this.trade_id = response.id;
+      self.total = parseInt(response.total);
+      self.trade_id = response.id;
     });
     // console.log(response);
   }
+
 }
 
 if(!window.location.href.includes("pobb.in")){
