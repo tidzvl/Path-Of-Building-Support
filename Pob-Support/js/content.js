@@ -10,10 +10,10 @@ class equidItem {
     this.Array.push(item);
   }
 
-  async check_total(){
+  async check_total() {
     for (let item of this.Array) {
       item.get_total();
-      await new Promise(resolve => setTimeout(resolve, 60000));
+      await new Promise((resolve) => setTimeout(resolve, 15000));
     }
   }
 
@@ -26,15 +26,15 @@ class equidItem {
     }
     return false;
   }
-  print_link(){
+  print_link() {
     for (var i = 0; i < this.Array.length; i++) {
       console.log(this.Array[i].search_link);
     }
   }
 
-  print_total(){
+  print_total() {
     for (var i = 0; i < this.Array.length; i++) {
-      console.log(this.Array[i].total + ' ' + this.Array[i].id);
+      console.log(this.Array[i].total + " " + this.Array[i].id);
     }
   }
 }
@@ -51,31 +51,49 @@ class Item {
     this.trade_id = "";
   }
 
-  add_modified(modified) {
+  add_modified(modified, isImplict = false) {
     var value = modified.values;
+    // console.log(modified.index);
+    var index = modified.index;
     modified = String(modified.attribute);
-
-    this.modified.push({
-      mod: modified,
-      ids: this.get_id_modified(modified),
-      values: value,
-    });
+    if(!isImplict){
+      this.modified.push({
+        mod: modified,
+        ids: this.get_id_modified(modified, isImplict),
+        values: value,
+      });
+    } else {
+      if(index != 4){
+        this.modified.push({
+          mod: modified,
+          ids: this.get_id_modified(modified, isImplict),
+          values: value,
+        });
+      }
+    }
   }
 
-  gen_json() {
+  gen_json(online = false) {
+    if (!online) {
+      var online = "any";
+    }
     var modified = this.modified;
     if (this.baseName === "") {
-      var prefix = `{"query": {"stats": [`;  
-    }else{
+      var prefix = `{"query": {"stats": [`;
+    } else {
       var prefix = `{"query": {"type": "` + this.baseName + `","stats": [`;
     }
-    var postfix = `]},"status": {"option": "any"}}`;
+    var postfix = `]},"status": {"option": "${online}"}}`;
     var fix = "";
     var i = 0;
     for (let stat of modified) {
       i++;
       if (stat.ids.length == 0) continue;
-      var add_fix = this.gen_stat(stat.ids, stat.values);
+      if (stat.values.length < 2) {
+        var add_fix = this.gen_stat(stat.ids);
+      } else {
+        var add_fix = this.gen_stat(stat.ids, stat.values);
+      }
       if (i < modified.length) add_fix += ",";
       fix += add_fix;
     }
@@ -85,7 +103,12 @@ class Item {
     this.search_json = all_fix;
   }
 
-  gen_stat(list_of_modified, list_of_values) {
+  gen_stat(list_of_modified, list_of_values = [1000, -1000]) {
+    // var max = parseInt(list_of_values[0]);
+    // var min = parseInt(list_of_values[1]);
+    var min = -1000;
+    var max = 1000;
+    // console.log(list_of_values);
     var fix = "";
     if (list_of_modified.length == 0) return fix;
     var prefix = `{
@@ -103,7 +126,11 @@ class Item {
       fix +=
         `{"id": "` +
         mod.id +
-        `","value": {"max": 1000,"min": -1000},"disabled": false}`;
+        `","value": {"max": ` +
+        max +
+        `,"min": ` +
+        min +
+        `},"disabled": false}`;
       if (i < list_of_modified.length - 1) fix += ",";
       i++;
     }
@@ -115,7 +142,7 @@ class Item {
     return this.name + " " + this.modified;
   }
 
-  get_id_modified(modified) {
+  get_id_modified(modified, isImplict) {
     modified = modified.replace(" -", " +");
     modified = modified.replace("-#", "+#");
     const json = JSON.parse(localStorage.getItem("data"));
@@ -149,6 +176,7 @@ class Item {
     // console.log(modified)
     // console.log(regex);
     var much = false;
+    var before_implict = "";
     json.result.forEach((result) => {
       result.entries.forEach((entry) => {
         if (
@@ -166,7 +194,7 @@ class Item {
         }
       });
     });
-    const mod2 = modified+" (Local)";
+    const mod2 = modified + " (Local)";
     // console.log(mod2);
     const regexPerfect2 = new RegExp(
       "^" +
@@ -197,28 +225,30 @@ class Item {
     return filteredEntries;
   }
 
-  gen_link(){
+  gen_link() {
     var prefix = "https://www.pathofexile.com/trade/search/Settlers?q=";
     var encode = encodeURIComponent(this.search_json);
     var link = prefix + encode;
     this.search_link = link;
   }
 
-  get_total(){
+  get_total() {
     const self = this;
     const body = JSON.stringify(this.search_json);
-    const url_api = 'https://www.pathofexile.com/api/trade/search/Settlers';
-    chrome.runtime.sendMessage({type: "getTotal", data: body}, function(response) {
-      console.log(response);
-      self.total = parseInt(response.total);
-      self.trade_id = response.id;
-    });
+    const url_api = "https://www.pathofexile.com/api/trade/search/Settlers";
+    chrome.runtime.sendMessage(
+      { type: "getTotal", data: body },
+      function (response) {
+        console.log(response);
+        self.total = parseInt(response.total);
+        self.trade_id = response.id;
+      }
+    );
     // console.log(response);
   }
-
 }
 
-if(!window.location.href.includes("pobb.in")){
+if (!window.location.href.includes("pobb.in")) {
   throw null;
 }
 console.log("Start");
@@ -258,6 +288,8 @@ const eqItem = new equidItem();
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "buttonClicked") {
+    // console.log(request.implict);
+    const isImplict = request.implict;
     if (!start) {
       start = true;
       const callback = function (mutationsList, observer) {
@@ -286,43 +318,58 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             });
             if (name != "") {
               var rarity = mutation.target.getAttribute("data-rarity");
-              console.log(rarity);
+              // console.log(rarity);
+              // console.log(mutation.target);
               var item = new Item(name, rarity);
-              mutation.target.querySelectorAll("ul li").forEach((ul) => {
-                if (!returnedValues.has(ul.textContent)) {
-                  var liStr = ul.textContent;
-                  let extractValues = (str) => {
-                    let values = str.match(
-                      /([+\-]?\d+(\.\d+)?%?)|(\(\d+-\d+\)%)/g
-                    );
-                    if (values) {
-                      return values.map((value) =>
-                        value.replace(/[()%]/g, "").replace("%", "").trim()
+              var partEle = mutation.target.querySelector(
+                ".p-2.pt-1.leading-tight"
+              ).innerHTML;
+              var parts = partEle.split(/(?=<ul>|<!---->)/);
+              parts.forEach((part, index) => {
+                var b = document.createElement("div");
+                b.innerHTML = part;
+                // mutation.target.querySelectorAll("ul li").forEach((ul) => {
+                b.querySelectorAll("li").forEach((ul) => {
+                  if (!returnedValues.has(ul.textContent)) {
+                    var liStr = ul.textContent;
+                    let extractValues = (str) => {
+                      let values = str.match(
+                        /([+\-]?\d+(\.\d+)?%?)|(\(\d+-\d+\)%)/g
                       );
+                      if (values) {
+                        return values.map((value) =>
+                          value.replace(/[()%]/g, "").replace("%", "").trim()
+                        );
+                      }
+                      return [];
+                    };
+                    let values = extractValues(liStr);
+                    let attribute = liStr;
+                    // console.log(attribute);
+                    values.forEach((value, index) => {
+                      if (Math.abs(value) > 0 && index === 0) {
+                        attribute = attribute.replace(Math.abs(value), "#");
+                      } else {
+                        attribute = attribute.replace(value, "#");
+                      }
+                    });
+                    attribute = attribute.replace(/[()]/g, "").trim();
+                    attribute = attribute.replace(/#+/g, "#");
+                    // console.log(attribute);
+                    let result = {
+                      attribute: attribute,
+                      values: values.map((value) => value.replace("%", "")),
+                      index: index,
+                    };
+                    // console.log(result);
+                    if (isImplict) {
+                      item.add_modified(result, isImplict);
+                    } else {
+                      item.add_modified(result);
                     }
-                    return [];
-                  };
-                  let values = extractValues(liStr);
-                  let attribute = liStr;
-                  // console.log(attribute);
-                  values.forEach((value, index) => {
-                    if (Math.abs(value) > 0 && index === 0) {
-                      attribute = attribute.replace(Math.abs(value), "#");
-                    }else{
-                      attribute = attribute.replace(value, "#");
-                    }
-                  });
-                  attribute = attribute.replace(/[()]/g, "").trim();
-                  attribute = attribute.replace(/#+/g, "#");
-                  // console.log(attribute);
-                  let result = {
-                    attribute: attribute,
-                    values: values.map((value) => value.replace("%", "")),
-                  };
-                  // console.log(result);
-                  item.add_modified(result);
-                  returnedValues.add(result);
-                }
+                    returnedValues.add(result);
+                  }
+                });
               });
               if (!eqItem.check_containts(item)) {
                 eqItem.add_item(item);
@@ -348,7 +395,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
-async function waitCheckTotal(eqItem){
+async function waitCheckTotal(eqItem) {
   await eqItem.check_total();
   console.log(eqItem.Array);
 }

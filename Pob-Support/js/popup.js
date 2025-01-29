@@ -1,6 +1,7 @@
 function toggleButton() {
   const button = document.querySelector('.detect');
   const isToggled = button.classList.toggle("toggled");
+  const isImplict = document.querySelector("#not-implict");
 
   if (isToggled) {
     button.classList.add('starting');
@@ -14,12 +15,20 @@ function toggleButton() {
     chrome.storage.local.remove("buttonState");
   }
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome.tabs.sendMessage(tabs[0].id, { action: 'buttonClicked' });
+    chrome.tabs.sendMessage(tabs[0].id, { action: 'buttonClicked' , implict: isImplict.checked});
   });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   const button = document.querySelector('.detect');
+
+  var myCheckbox = document.getElementById('myCheckbox');
+  chrome.storage.sync.get('myCheckbox', function(data) {
+      if (data.myCheckbox !== undefined) {
+          myCheckbox.checked = data.myCheckbox;
+      }
+  });
+
   chrome.storage.local.get("buttonState", (result) => {
     if (result.buttonState === "toggled") {
       button.classList.add('starting');
@@ -33,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   var a = document.querySelector('#check-list');
   var b = document.querySelector('#trade-with');
+  var c = document.querySelector('#not-implict');
   
   a.addEventListener('change', () => {
     if (a.checked === true) {
