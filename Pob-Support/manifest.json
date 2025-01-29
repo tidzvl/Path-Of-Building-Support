@@ -21,7 +21,7 @@
   ],
   "web_accessible_resources": [
     { 
-      "resources": ["json/stat.json"], 
+      "resources": ["json/stat.json", "popup.html"], 
       "matches": ["https://pobb.in/*"] 
     }
   ]

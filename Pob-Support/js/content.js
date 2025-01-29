@@ -399,3 +399,31 @@ async function waitCheckTotal(eqItem) {
   await eqItem.check_total();
   console.log(eqItem.Array);
 }
+
+(function() {
+  var container = document.createElement('div');
+  container.style.position = 'fixed';
+  container.style.top = '0';
+  container.style.right = '0';
+  container.style.width = '300px';
+  container.style.height = window.innerHeight + 'px';
+  container.style.backgroundColor = 'white';
+  container.style.border = '1px solid black';
+  container.style.zIndex = '10000';
+  document.body.appendChild(container);
+
+  var iframe = document.createElement('iframe');
+  iframe.src = chrome.runtime.getURL('popup.html');
+  iframe.style.width = '100%';
+  iframe.style.height = '100%';
+  iframe.style.border = 'none';
+  container.appendChild(iframe);
+
+  document.body.style.marginRight = '300px';
+
+  window.addEventListener('resize', function() {
+      container.style.height = window.innerHeight + 'px';
+      document.body.style.marginRight = '300px';
+  });
+})();
+
