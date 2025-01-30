@@ -5,6 +5,7 @@ class equidItem {
 
   add_item(item) {
     item.gen_json();
+    item.gen_html();
     // item.gen_link();
     // item.get_total();
     this.Array.push(item);
@@ -49,13 +50,47 @@ class Item {
     this.search_link = "";
     this.total = 0;
     this.trade_id = "";
+    this.Postfixhtml = `
+                </ul>
+              </div>
+            </div>
+          </div>
+    `;
+    this.html = "";
   }
 
+
+  gen_html(){
+    var link = this.gen_link();
+    var Prefixhtml = `
+    <div class="accordion-item card">
+            <h3 class="accordion-header fs-tiny">
+              <button type="button" class="accordion-button collapsed noti-card" data-bs-toggle="collapse" data-bs-target="#${this.name.replace(/[^a-zA-Z]/g, "")}" aria-expanded="false">
+                <strong><a href="${link}">${this.name}</a></strong>
+              </button>
+            </h3>
+          
+            <div id="${this.name.replace(/[^a-zA-Z]/g, "")}" class="accordion-collapse collapse" data-bs-parent="#accordionStyle1">
+              <div class="accordion-body">
+                <ul class="result">
+                `;
+    this.html = Prefixhtml + this.html + this.Postfixhtml;
+    chrome.runtime.sendMessage(
+      { type: "loadHtml", data: this.html },
+      function (response) {
+        console.log(response);
+      }
+    );
+  }
   add_modified(modified, isImplict = false) {
     var value = modified.values;
     // console.log(modified.index);
     var index = modified.index;
     modified = String(modified.attribute);
+    this.html += `<li>
+      <input class="mx-2 my-1" type="checkbox" id="${this.name.replace(/[^a-zA-Z]/g, "")+modified.replace(/[^a-zA-Z]/g, "")}" checked>
+      <label for="${this.name.replace(/[^a-zA-Z]/g, "")+modified.replace(/[^a-zA-Z]/g, "")}">${modified}</label>
+    </li>`;
     if(!isImplict){
       this.modified.push({
         mod: modified,
@@ -230,6 +265,7 @@ class Item {
     var encode = encodeURIComponent(this.search_json);
     var link = prefix + encode;
     this.search_link = link;
+    return link;
   }
 
   get_total() {
@@ -405,7 +441,7 @@ async function waitCheckTotal(eqItem) {
   container.style.position = 'fixed';
   container.style.top = '0';
   container.style.right = '0';
-  container.style.width = '300px';
+  container.style.width = '500px';
   container.style.height = window.innerHeight + 'px';
   container.style.backgroundColor = 'white';
   container.style.border = '1px solid black';
@@ -419,11 +455,11 @@ async function waitCheckTotal(eqItem) {
   iframe.style.border = 'none';
   container.appendChild(iframe);
 
-  document.body.style.marginRight = '300px';
+  document.body.style.marginRight = '500px';
 
   window.addEventListener('resize', function() {
       container.style.height = window.innerHeight + 'px';
-      document.body.style.marginRight = '300px';
+      document.body.style.marginRight = '500px';
   });
 })();
 

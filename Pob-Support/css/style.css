@@ -5,7 +5,7 @@ body {
   padding: 0;
   display: row;
   height: 500px;
-  width: 300px;
+  width: 500px;
 }
 
 h1 {
@@ -46,4 +46,12 @@ button.starting {
 
 ul {
   list-style-type: none;
+}
+
+.mx-2{
+  margin-left: 10px;
+}
+
+.my-1{
+  margin-bottom: 5px;
 }

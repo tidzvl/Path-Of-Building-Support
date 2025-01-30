@@ -3,7 +3,15 @@
   "name": "Path Of Building Support",
   "version": "1.0",
   "description": "Path Of Building Support.",
-  "permissions": ["activeTab", "scripting", "storage", "https://www.pathofexile.com/*", "background"],
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "https://www.pathofexile.com/*",
+    "background",
+    "https://pobb.in/*",
+    "tabs"
+  ],
   "background": {
     "service_worker": "js/background.js"
   },
@@ -20,9 +28,9 @@
     }
   ],
   "web_accessible_resources": [
-    { 
-      "resources": ["json/stat.json", "popup.html"], 
-      "matches": ["https://pobb.in/*"] 
+    {
+      "resources": ["json/stat.json", "popup.html"],
+      "matches": ["https://pobb.in/*"]
     }
   ]
 }

@@ -25,7 +25,9 @@
     <title>Path Of Building Support</title>
     <script src="js/fuse.min.js"></script>
     <script src="js/popup.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
   </head>
   <body>
     <h1>Hello, i'm inT1z!</h1>
@@ -36,8 +38,8 @@
     <p class="note"><em>Note: Click Start sau đó di chuột qua các item của build trong pob để lấy dữ liệu!
     </em></p>
     <div class="container">
+        <label class="mx-2"><strong>Trade link option:</strong></label>
         <ul>
-            <label><strong>Trade link option:</strong></label>
             <li style="margin-top: 2%;">
                 <input name="tradelink" class="tradelink" type="radio" id="trade-default" checked>
                 <label for="trade-default">Chỉ tìm item theo dòng chuẩn.</label>
@@ -69,9 +71,17 @@
             <br>
             <li>
                 <input class="" type="checkbox" id="not-implict" checked>
-                <label for="not-implict">Bỏ qua dòng Implict hay Corrupted.</label>
+                <label for="not-implict">Skip implict or corruptted.</label>
             </li>
         </ul>
+    </div>
+    <!-- <div class="result">
+        <label class="mx-2"><strong>Item:</strong></label>
+        <ul>
+            <li>That be item 1</li>
+        </ul>
+    </div> -->
+    <div class="accordion accordion-header-primary" id="accordionStyle1">
     </div>
   </body>
 </html>

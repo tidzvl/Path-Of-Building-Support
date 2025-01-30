@@ -1,3 +1,10 @@
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
+  if(request.type === "loadHtml"){
+    document.querySelector(".accordion").innerHTML += request.data;
+    sendResponse("Oke");
+  }
+});
+
 function toggleButton() {
   const button = document.querySelector('.detect');
   const isToggled = button.classList.toggle("toggled");
