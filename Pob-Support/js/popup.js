@@ -50,6 +50,19 @@ document.addEventListener('DOMContentLoaded', () => {
   var a = document.querySelector('#check-list');
   var b = document.querySelector('#trade-with');
   var c = document.querySelector('#not-implict');
+
+  const result = document.querySelector('.accordion');
+  result.addEventListener("change", (event) => {
+    const a = event.target.closest("li").innerText;
+    var data = {
+      mod: a,
+      isImplict: c.checked,
+    };
+    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+      var tabId = tabs[0].id;
+      chrome.tabs.sendMessage(tabId, { type: 'addMod', data: data });
+    });
+  });
   
   a.addEventListener('change', () => {
     if (a.checked === true) {

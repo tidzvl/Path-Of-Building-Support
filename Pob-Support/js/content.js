@@ -71,7 +71,7 @@ class Item {
             </h3>
           
             <div id="${this.name.replace(/[^a-zA-Z]/g, "")}" class="accordion-collapse collapse" data-bs-parent="#accordionStyle1">
-              <div class="accordion-body">
+              <div class="accordion-body" id="${this.name.replace(/[^a-zA-Z]/g, "")}-in">
                 <ul class="result">
                 `;
     this.html = Prefixhtml + this.html + this.Postfixhtml;
@@ -87,11 +87,11 @@ class Item {
     // console.log(modified.index);
     var index = modified.index;
     modified = String(modified.attribute);
-    this.html += `<li>
-      <input class="mx-2 my-1" type="checkbox" id="${this.name.replace(/[^a-zA-Z]/g, "")+modified.replace(/[^a-zA-Z]/g, "")}" checked>
-      <label for="${this.name.replace(/[^a-zA-Z]/g, "")+modified.replace(/[^a-zA-Z]/g, "")}">${modified}</label>
-    </li>`;
     if(!isImplict){
+      this.html += `<li>
+        <input class="mx-2 my-1" type="checkbox" id="${this.name.replace(/[^a-zA-Z]/g, "")+modified.replace(/[^a-zA-Z]/g, "")}" checked>
+        <label for="${this.name.replace(/[^a-zA-Z]/g, "")+modified.replace(/[^a-zA-Z]/g, "")}">${modified}</label>
+      </li>`;
       this.modified.push({
         mod: modified,
         ids: this.get_id_modified(modified, isImplict),
@@ -99,11 +99,20 @@ class Item {
       });
     } else {
       if(index != 4){
+        this.html += `<li>
+          <input class="mx-2 my-1" type="checkbox" id="${this.name.replace(/[^a-zA-Z]/g, "")+modified.replace(/[^a-zA-Z]/g, "")}" checked>
+          <label for="${this.name.replace(/[^a-zA-Z]/g, "")+modified.replace(/[^a-zA-Z]/g, "")}">${modified}</label>
+        </li>`;
         this.modified.push({
           mod: modified,
           ids: this.get_id_modified(modified, isImplict),
           values: value,
         });
+      }else{
+        this.html += `<li>
+          <input class="mx-2 my-1" type="checkbox" id="${this.name.replace(/[^a-zA-Z]/g, "")+modified.replace(/[^a-zA-Z]/g, "")}">
+          <label for="${this.name.replace(/[^a-zA-Z]/g, "")+modified.replace(/[^a-zA-Z]/g, "")}">${modified}</label>
+        </li>`;
       }
     }
   }
@@ -425,8 +434,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       observers.forEach((observer) => observer.disconnect());
       observers = [];
       // eqItem.check_total()
-      // console.log(eqItem.Array);
-      waitCheckTotal(eqItem);
+      console.log(eqItem.Array);
+      // waitCheckTotal(eqItem);
     }
   }
 });
@@ -462,4 +471,9 @@ async function waitCheckTotal(eqItem) {
       document.body.style.marginRight = '500px';
   });
 })();
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
+  if(request.type === "addMod"){
+    console.log(request);
+  }
+});
 
