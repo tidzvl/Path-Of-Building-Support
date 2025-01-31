@@ -53,14 +53,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const result = document.querySelector('.accordion');
   result.addEventListener("change", (event) => {
+    var type;
+    if (event.target.checked === true) {
+      type = 'addMod';
+    }else{
+      type = 'removeMod';
+    }
     const a = event.target.closest("li").innerText;
+    const b = event.target.closest("div").id;
     var data = {
-      mod: a,
+      id: b.slice(0, -3),
+      mod: a.trim(),
       isImplict: c.checked,
     };
     chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
       var tabId = tabs[0].id;
-      chrome.tabs.sendMessage(tabId, { type: 'addMod', data: data });
+      chrome.tabs.sendMessage(tabId, { type: type, data: data });
     });
   });
   

@@ -44,6 +44,7 @@ class Item {
   constructor(name, rare) {
     this.rare = rare;
     this.name = name;
+    this.id = name.replace(/[^a-zA-Z]/g, "");
     this.baseName = name.split(",")[1];
     this.modified = [];
     this.search_json = "";
@@ -59,6 +60,9 @@ class Item {
     this.html = "";
   }
 
+  // save_data(){
+
+  // }
 
   gen_html(){
     var link = this.gen_link();
@@ -429,6 +433,19 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         observer.observe(node, config);
         observers.push(observer);
       });
+      const items = document.querySelectorAll('img');
+
+      function triggerMouseover() {
+          items.forEach((item, index) => {
+              setTimeout(() => {
+                  const event = new Event('mouseover');
+                  item.dispatchEvent(event);
+              }, index * 1); 
+          });
+      }
+
+      triggerMouseover();
+
     } else {
       start = false;
       observers.forEach((observer) => observer.disconnect());
@@ -473,6 +490,9 @@ async function waitCheckTotal(eqItem) {
 })();
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
   if(request.type === "addMod"){
+    console.log(request);
+  }
+  if (request.type === "removeMod"){
     console.log(request);
   }
 });
