@@ -1,3 +1,5 @@
+var isChecking = false;
+
 class equidItem {
   constructor() {
     this.Array = [];
@@ -11,10 +13,15 @@ class equidItem {
     this.Array.push(item);
   }
 
+  save_data(){
+    sessionStorage.setItem("equidItem", JSON.stringify(this.Array));
+  }
+
   async check_total() {
     for (let item of this.Array) {
+      if(item.search_on == false) continue;
       item.get_total();
-      await new Promise((resolve) => setTimeout(resolve, 15000));
+      await new Promise((resolve) => setTimeout(resolve, 10000));
     }
   }
 
@@ -58,19 +65,23 @@ class Item {
           </div>
     `;
     this.html = "";
+    this.search_on = false;
   }
 
-  // save_data(){
+  create_with_json(json){
+    console.log(json);
+  }
 
-  // }
-
-  gen_html(){
+  gen_html(type = "loadHtml"){
     var link = this.gen_link();
+    // const shortenedName = this.name.substring(0, 30).padEnd(30, '\u00A0');
+    const shortenedName = this.name.length > 30 ? this.name.substring(0, 27) + '...' : this.name.substring(0, 30).padEnd(30, '\u00A0');
     var Prefixhtml = `
-    <div class="accordion-item card">
+    <div class="accordion-item card ${this.name.replace(/[^a-zA-Z]/g, "")}-out">
             <h3 class="accordion-header fs-tiny">
               <button type="button" class="accordion-button collapsed noti-card" data-bs-toggle="collapse" data-bs-target="#${this.name.replace(/[^a-zA-Z]/g, "")}" aria-expanded="false">
-                <strong><a href="${link}">${this.name}</a></strong>
+                <strong><a href="${link}">${shortenedName}</a> Total: <span class="total${this.name.replace(/[^a-zA-Z]/g, "")}">0</span>    </strong>
+                <span><input class="auto-check" type="checkbox" id="${this.name.replace(/[^a-zA-Z]/g, "")}-check"><label for="${this.name.replace(/[^a-zA-Z]/g, "")}-check">Auto Check?</label></span>
               </button>
             </h3>
           
@@ -80,20 +91,21 @@ class Item {
                 `;
     this.html = Prefixhtml + this.html + this.Postfixhtml;
     chrome.runtime.sendMessage(
-      { type: "loadHtml", data: this.html },
+      { type: type, data: this.html , id: this.id, link: link },
       function (response) {
         console.log(response);
       }
     );
   }
   add_modified(modified, isImplict = false) {
+    // console.log(modified);  
     var value = modified.values;
     // console.log(modified.index);
     var index = modified.index;
     modified = String(modified.attribute);
     if(!isImplict){
       this.html += `<li>
-        <input class="mx-2 my-1" type="checkbox" id="${this.name.replace(/[^a-zA-Z]/g, "")+modified.replace(/[^a-zA-Z]/g, "")}" checked>
+        <input index="${index}" value="${value}" class="mx-2 my-1" type="checkbox" id="${this.name.replace(/[^a-zA-Z]/g, "")+modified.replace(/[^a-zA-Z]/g, "")}" checked>
         <label for="${this.name.replace(/[^a-zA-Z]/g, "")+modified.replace(/[^a-zA-Z]/g, "")}">${modified}</label>
       </li>`;
       this.modified.push({
@@ -104,7 +116,7 @@ class Item {
     } else {
       if(index != 4){
         this.html += `<li>
-          <input class="mx-2 my-1" type="checkbox" id="${this.name.replace(/[^a-zA-Z]/g, "")+modified.replace(/[^a-zA-Z]/g, "")}" checked>
+          <input index="${index}" value="${value}" class="mx-2 my-1" type="checkbox" id="${this.name.replace(/[^a-zA-Z]/g, "")+modified.replace(/[^a-zA-Z]/g, "")}" checked>
           <label for="${this.name.replace(/[^a-zA-Z]/g, "")+modified.replace(/[^a-zA-Z]/g, "")}">${modified}</label>
         </li>`;
         this.modified.push({
@@ -114,11 +126,26 @@ class Item {
         });
       }else{
         this.html += `<li>
-          <input class="mx-2 my-1" type="checkbox" id="${this.name.replace(/[^a-zA-Z]/g, "")+modified.replace(/[^a-zA-Z]/g, "")}">
+          <input index="${index}" value="${value}" class="mx-2 my-1" type="checkbox" id="${this.name.replace(/[^a-zA-Z]/g, "")+modified.replace(/[^a-zA-Z]/g, "")}">
           <label for="${this.name.replace(/[^a-zA-Z]/g, "")+modified.replace(/[^a-zA-Z]/g, "")}">${modified}</label>
         </li>`;
       }
     }
+  }
+
+  remove_modified(modified) {
+    var value = modified.values;
+    var index = modified.index;
+    modified = String(modified.attribute);
+    // this.modified.splice(index, 1);
+    this.modified = this.modified.filter(item => item.mod !== modified);
+    this.html = this.html.replace(
+      `<li>
+        <input index="${index}" value="${value}" class="mx-2 my-1" type="checkbox" id="${this.name.replace(/[^a-zA-Z]/g, "")+modified.replace(/[^a-zA-Z]/g, "")}" checked>
+        <label for="${this.name.replace(/[^a-zA-Z]/g, "")+modified.replace(/[^a-zA-Z]/g, "")}">${modified}</label>
+      </li>`,
+      ""
+    );
   }
 
   gen_json(online = false) {
@@ -291,6 +318,12 @@ class Item {
         console.log(response);
         self.total = parseInt(response.total);
         self.trade_id = response.id;
+        chrome.runtime.sendMessage({
+          type: "UpdateTotal",
+          total: self.total,
+          id: self.id,
+          trade_id: self.trade_id,
+        });
       }
     );
     // console.log(response);
@@ -451,6 +484,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       observers.forEach((observer) => observer.disconnect());
       observers = [];
       // eqItem.check_total()
+      // eqItem.save_data();
       console.log(eqItem.Array);
       // waitCheckTotal(eqItem);
     }
@@ -462,6 +496,18 @@ async function waitCheckTotal(eqItem) {
   console.log(eqItem.Array);
 }
 
+function print_array(){
+  if(eqItem.Array.length == 0) return;
+  console.log(eqItem.Array);
+}
+
+var checkState = false;
+async function auto_check(){
+  if(isChecking || !checkState) return;
+  isChecking = true;
+  await waitCheckTotal(eqItem);
+  isChecking = false;
+}
 (function() {
   var container = document.createElement('div');
   container.style.position = 'fixed';
@@ -487,13 +533,53 @@ async function waitCheckTotal(eqItem) {
       container.style.height = window.innerHeight + 'px';
       document.body.style.marginRight = '500px';
   });
+  setInterval(auto_check, 1000);
 })();
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
   if(request.type === "addMod"){
     console.log(request);
+    var find_id = request.data.id;
+    // var data = sessionStorage.getItem("equidItem");
+    for (var i = 0; i < eqItem.Array.length; i++) {
+      if (eqItem.Array[i].id == find_id) {
+        eqItem.Array[i].add_modified(request.data.result, request.data.isImplict);
+        // console.log(eqItem.Array[i]);
+        eqItem.Array[i].gen_json();
+        eqItem.Array[i].gen_html("changeHtml");
+      }
+    }
   }
   if (request.type === "removeMod"){
     console.log(request);
+    var find_id = request.data.id;
+    for (var i = 0; i < eqItem.Array.length; i++) {
+      if (eqItem.Array[i].id == find_id) {
+        eqItem.Array[i].remove_modified(request.data.result);
+        eqItem.Array[i].gen_json();
+        eqItem.Array[i].gen_html("changeHtml");
+      }
+    }
+  }
+  if (request.type === "onCheck"){
+    var find_id = request.data.id;
+    for (var i = 0; i < eqItem.Array.length; i++) {
+      if (eqItem.Array[i].id == find_id) {
+        eqItem.Array[i].search_on = true;
+        break;
+      }
+    }
+  }
+  if(request.type === "offCheck"){
+    var find_id = request.data.id;
+    for (var i = 0; i < eqItem.Array.length; i++) {
+      if (eqItem.Array[i].id == find_id) {
+        eqItem.Array[i].search_on = false;
+        break;
+      }
+    }
+  }
+  if(request.type === "autoCheck"){
+    checkState = request.auto;
   }
 });
 

@@ -36,3 +36,8 @@
 
 - The api can use in extension developer console, but the console of current web is not available. 
 - I think i can use dev console to fetch api and code the mes to return backend.
+
+### Update add and remove
+
+- popup.js request to content.js, then get full data equid from localstorage, after that check id.
+- when id is true, get the item from that id. create item from json => add modified => gen search link (auto in html), search json, html 

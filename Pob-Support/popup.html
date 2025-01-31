@@ -31,11 +31,12 @@
   </head>
   <body>
     <h1>Hello, i'm inT1z!</h1>
-    <div class="noti">That be noti</div>
+    <!-- <div class="noti">That be noti</div> -->
+    <textarea class="noti" id="notiTextarea" rows="6" cols="79" style="font-size: 12px; margin: 2%;"></textarea>
     <br>
     <!-- <button class="test">Test</button> -->
     <button class="detect">Start Detect </button>
-    <p class="note"><em>Note: Click Start sau đó di chuột qua các item của build trong pob để lấy dữ liệu!
+    <p class="note"><em>Note: Click Start và đợi cho tới khi load hết item!
     </em></p>
     <div class="container">
         <label class="mx-2"><strong>Trade link option:</strong></label>
@@ -45,7 +46,7 @@
                 <label for="trade-default">Chỉ tìm item theo dòng chuẩn.</label>
             </li>
             <li>
-                <input name="tradelink" class="tradelink" type="radio" id="trade-with">
+                <input name="tradelink" class="tradelink" type="radio" id="trade-with" disabled>
                 <label for="trade-with">Tìm dòng theo chỉ số:</label>
                 <select id="less" name="options" disabled> 
                     <option value="10">-10%</option> 
@@ -61,6 +62,10 @@
                 <label for="check-list">Tự động kiểm tra item được list.</label>
             </li>
             <li>
+                <input name="option" class="" type="radio" id="noti-trade-off" disabled checked>
+                <label for="noti-trade-off">Không thông báo.</label>
+            </li>
+            <li>
                 <input name="option" class="" type="radio" id="noti-trade" disabled>
                 <label for="noti-trade">Thông báo nếu có vật phẩm.</label>
             </li>
@@ -71,7 +76,7 @@
             <br>
             <li>
                 <input class="" type="checkbox" id="not-implict" checked>
-                <label for="not-implict">Skip implict or corruptted.</label>
+                <label for="not-implict">Bỏ qua dòng implict và corruptted.</label>
             </li>
         </ul>
     </div>
