@@ -10,12 +10,12 @@ body {
 
 h1 {
   text-align: center;
-  color: #333;
+  color: #A3E635;
 }
 
 p {
   text-align: center;
-  color: #666;
+  color: #f0f0f0;
 }
 p.note {
   font-size: small;
@@ -44,9 +44,19 @@ button.starting {
   align-items: left;
 }
 
-ul {
+.container ul {
   list-style-type: none;
+  color: #f0f0f0;
 }
+
+.container li {
+  color: #f0f0f0;
+}
+
+.container label {
+  color: #f0f0f0;
+}
+
 
 .mx-2{
   margin-left: 10px;

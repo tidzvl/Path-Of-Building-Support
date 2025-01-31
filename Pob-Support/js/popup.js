@@ -10,17 +10,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
     c.href = request.link;
     sendResponse("Oke");
   }
-  if(request.type === "UpdateTotal"){
+  if(request.type === "UpdateTotal" && request.total != 0){
     var c = request.id;
     var b = document.querySelector(".total"+c);
     b.textContent = request.total;
     var a = document.querySelector(".noti");
     a.value += "Item "+ c + " has been listing on https://www.pathofexile.com/trade/search/Settlers/" + request.trade_id + " \nTotal: "+ request.total + "\n" + "------\n";
     a.scrollTop = a.scrollHeight;
-    // var html = `
-    //   Item ${c} has been listing on <a target='_blank' href='https://www.pathofexile.com/trade/search/Settlers/${request.trade_id}'>${request.trade_id}</a>. Total: ${request.total}
-    // `;
-    // a.innerHTML = html;
   }
 });
 
