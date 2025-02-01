@@ -1,48 +1,46 @@
-# Path-Of-Building-Support
+# Path Of Building Support
 
-## Simple Documentation
+Path Of Building Support is a powerful extension for Path of Building, an application dedicated to Path of Exile. This extension helps optimize and support users in buying and selling items by scanning items in PoB and providing numerous useful features.
 
-### Task 1
+## Current Features
 
-- Build the extension have function scan the pob display by mouse move.
-- Per mouse move, item discription change, i take this and throw to list.
-- Per item find by mouse, i find the modified of item in `get list of stat` api.
-- After that, i build the query have all item modified and post to search.
-- The search post is realtime. And display how many item list on trade site.
-- That can build the sort link to go trade site.
-----------------------------------------------------------------
+- **Item Scanning:**
+  - Automatically scans items in Path of Building (PoB).
+  - Extracts all stats and modifiers of the items.
 
-### Task 2
+- **Link Generation:**
+  - Supports generating links to trade websites, making buying and selling items easier and more convenient.
 
-- Detect full gems at gem list. 
-- Per gem, we can get requirements level and who is sell that.
-- [OPTIONAL] if i'm intellisense, i can get token and get level of character realtime. Per level up, i can notifications to user for buy the gem.
-- If i'm not intellisense, i want to build the roadmap of gem for user.
+- **Display Options:**
+  - Scanned items are displayed as lines, allowing users to select or deselect items at will.
 
-----------------------------------------------------------------
+- **Ignore Implict and Corrupted:**
+  - Features to ignore implict and corrupted lines to help with more objective and easier item searches.
 
-### Task 3
+- **API Auto-checking Support:**
+  - Automatically checks and notifies if items are listed on Path of Exile trade when the user is logged in.
+  - Displays notifications with links and total item count, making it easy for users to access.
 
-- If it ok, i can build the application have function auto whisper the seller when item i checked is listing.
+## Upcoming Features
 
+- **Notification Window:**
+  - Displays notification windows if items are listed, helping users quickly spot and purchase desired items.
 
-### Update Item Modified
+- **Stat-line Searching:**
+  - Enables searching for items with specific stat lines, making item searches more precise and easy.
 
-- Per item, we have the "Base Name" first, Quality and normal base mod can be skipped. It place in <ul> first
-- At modified, the Implict mod place in the second <ul> with color is **#88f**.
-- The explict and crafting mod place in the third <ul>.
+## Installation
 
-### Update Use Api
+To install Path Of Building Support, simply download the extension and add it to PoB following the instructions in the `INSTALL.md` file.
 
-- The api can use in extension developer console, but the console of current web is not available. 
-- I think i can use dev console to fetch api and code the mes to return backend.
+## Contribution
 
-### Update add and remove
+We welcome contributions from the community. If you want to contribute code or report issues, please create an issue or pull request on our GitHub repo.
 
-- popup.js request to content.js, then get full data equid from localstorage, after that check id.
-- when id is true, get the item from that id. create item from json => add modified => gen search link (auto in html), search json, html 
+## License
 
+Path Of Building Support is released under the MIT License. Please see the `LICENSE` file for more details if it contain.
 
-## HAPPY NEW YEAR AND NEW VERSIONS
-### That be "khai code đầu năm" of me!
-- Remove nodejs
+---
+
+*Thank you for using Path Of Building Support! If you have any questions or feedback, feel free to contact us via email **Nguyentinvs123@gmail.com** or create an issue on GitHub.*
