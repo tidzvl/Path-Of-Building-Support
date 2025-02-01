@@ -41,3 +41,8 @@
 
 - popup.js request to content.js, then get full data equid from localstorage, after that check id.
 - when id is true, get the item from that id. create item from json => add modified => gen search link (auto in html), search json, html 
+
+
+## HAPPY NEW YEAR AND NEW VERSIONS
+### That be "khai code đầu năm" of me!
+- Remove nodejs
