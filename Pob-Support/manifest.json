@@ -7,9 +7,7 @@
     "activeTab",
     "scripting",
     "storage",
-    "https://www.pathofexile.com/*",
     "background",
-    "https://pobb.in/*",
     "tabs"
   ],
   "background": {
@@ -18,7 +16,12 @@
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "48": "img/48.png"
+      "48": "img/44_2.png"
+    },
+    "icon": {
+      "16": "img/16.png",
+      "48": "img/44_2.png",
+      "128": "img/128.png"
     }
   },
   "content_scripts": [

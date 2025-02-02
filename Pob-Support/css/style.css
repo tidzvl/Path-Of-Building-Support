@@ -20,6 +20,9 @@ p {
 p.note {
   font-size: small;
 }
+em.note {
+  font-size: small;
+}
 
 button {
   display: block;
@@ -64,4 +67,26 @@ button.starting {
 
 .my-1{
   margin-bottom: 5px;
+}
+
+.bg-slate-900{
+  background-color: #0F172A;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  overflow: auto;
+}
+
+.title{
+  padding: 0.4rem;
+  margin-left: auto;  
+  margin-right: auto;
+}
+
+.accordion{
+  padding-top: 50px;
+}
+
+.content{
+  padding-top: 50px;
 }

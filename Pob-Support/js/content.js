@@ -518,7 +518,7 @@ async function auto_check(){
   container.style.width = '500px';
   container.style.height = window.innerHeight + 'px';
   container.style.backgroundColor = 'white';
-  container.style.border = '1px solid black';
+  // container.style.border = '1px solid black';
   container.style.zIndex = '10000';
   document.body.appendChild(container);
 
