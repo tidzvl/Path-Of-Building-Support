@@ -14,9 +14,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
     var c = request.id;
     var b = document.querySelector(".total"+c);
     b.textContent = request.total;
-    var a = document.querySelector(".noti");
-    a.value += "Item "+ c + " has been listing on https://www.pathofexile.com/trade/search/Settlers/" + request.trade_id + " \nTotal: "+ request.total + "\n" + "------\n";
-    a.scrollTop = a.scrollHeight;
+    var d = document.querySelector("#noti-trade");
+    if(d.checked){
+      var a = document.querySelector(".noti");
+      a.value += "Item "+ c + " has been listing on https://www.pathofexile.com/trade/search/Settlers/" + request.trade_id + " \nTotal: "+ request.total + "\n" + "------\n";
+      a.scrollTop = a.scrollHeight;
+    }
   }
 });
 
