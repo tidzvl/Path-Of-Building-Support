@@ -148,9 +148,11 @@ class Item {
     );
   }
 
-  gen_json(online = false) {
+  gen_json(online = true) {
     if (!online) {
       var online = "any";
+    }else{
+      var online = "online";
     }
     var modified = this.modified;
     if (this.baseName === "") {
