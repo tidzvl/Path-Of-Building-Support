@@ -5,7 +5,7 @@ Bạn có hai lựa chọn để cài đặt Path Of Building Support:
 ## Lựa Chọn 1: Cài Đặt Thủ Công
 
 1. **Tải về kho mã:**
-   - Truy cập vào mục Release của Path Of Building Support theo đường dẫn [https://github.com/tidzvl/Path-Of-Building-Support/releases](#).
+   - Truy cập vào mục Release của Path Of Building Support theo đường dẫn [này](https://github.com/tidzvl/Path-Of-Building-Support/releases).
    - Tải về phiên bản mới nhất.
    - Giải nén tệp ZIP đã tải xuống vào vị trí mong muốn trên máy tính của bạn.
 
@@ -22,7 +22,7 @@ Tiện ích mở rộng bây giờ sẽ được cài đặt và sẵn sàng s�
 ## Lựa Chọn 2: Cài Đặt Trực Tiếp từ Cửa Hàng Tiện Ích
 
 1. **Truy cập cửa hàng tiện ích:**
-   - Truy cập vào [https://chromewebstore.google.com/detail/path-of-building-support/kchamfaibofhipddaghifdfgicpeihil](#) cho Path Of Building Support.
+   - Truy cập vào [Extension Store](https://chromewebstore.google.com/detail/path-of-building-support/kchamfaibofhipddaghifdfgicpeihil) cho Path Of Building Support.
 
 2. **Cài đặt tiện ích:**
    - Nhấp vào nút "Thêm vào Chrome" (hoặc tương đương).
