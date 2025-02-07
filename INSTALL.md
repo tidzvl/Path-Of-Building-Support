@@ -22,7 +22,7 @@ The extension should now be installed and ready to use.
 ## Option 2: Direct Installation from Extension Store
 
 1. **Access the extension store:**
-   - Go to the [Update Soon](#) for Path Of Building Support.
+   - Go to the [https://chromewebstore.google.com/detail/path-of-building-support/kchamfaibofhipddaghifdfgicpeihil](#) for Path Of Building Support.
 
 2. **Install the extension:**
    - Click on the "Add to Chrome" (or equivalent) button.

@@ -22,7 +22,7 @@ Tiện ích mở rộng bây giờ sẽ được cài đặt và sẵn sàng s�
 ## Lựa Chọn 2: Cài Đặt Trực Tiếp từ Cửa Hàng Tiện Ích
 
 1. **Truy cập cửa hàng tiện ích:**
-   - Truy cập vào [Sẽ Cập Nhật Sớm](#) cho Path Of Building Support.
+   - Truy cập vào [https://chromewebstore.google.com/detail/path-of-building-support/kchamfaibofhipddaghifdfgicpeihil](#) cho Path Of Building Support.
 
 2. **Cài đặt tiện ích:**
    - Nhấp vào nút "Thêm vào Chrome" (hoặc tương đương).
