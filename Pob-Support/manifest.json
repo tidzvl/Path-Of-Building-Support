@@ -10,7 +10,7 @@
     "background"
   ],
   "background": {
-    "service_worker": "js/background.min.js"
+    "service_worker": "js/background.js"
   },
   "action": {
     "default_popup": "popup.html",
@@ -26,7 +26,7 @@
   "content_scripts": [
     {
       "matches": ["https://pobb.in/*", "https://www.pathofexile.com/*"],
-      "js": ["js/content.min.js", "js/fuse.min.js"]
+      "js": ["js/content.js", "js/fuse.min.js"]
     }
   ],
   "web_accessible_resources": [
