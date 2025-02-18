@@ -21,10 +21,10 @@ Path Of Building Support is a powerful extension for Path of Building, an applic
   - Automatically checks and notifies if items are listed on Path of Exile trade when the user is logged in.
   - Displays notifications with links and total item count, making it easy for users to access.
 
-## Upcoming Features
-
 - **Notification Window:**
   - Displays notification windows if items are listed, helping users quickly spot and purchase desired items.
+
+## Upcoming Features
 
 - **Stat-line Searching:**
   - Enables searching for items with specific stat lines, making item searches more precise and easy.
